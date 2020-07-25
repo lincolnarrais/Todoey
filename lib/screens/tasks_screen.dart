@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 
 import 'add_task_screen.dart';
-
+import '../models/task.dart';
 import '../widgets/tasks_list.dart';
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget {
+  @override
+  _TasksScreenState createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  List<Task> tasks = [
+    Task(name: 'Buy  milk'),
+    Task(name: 'Buy  bread'),
+    Task(name: 'Buy  eggs'),
+  ];
+
+  void addTask(String taskName) {
+    setState(() {
+      tasks.add(Task(name: taskName));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +59,12 @@ class TasksScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '12 Tasks',
+                    '${tasks.length} Tasks',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500),
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -60,7 +78,7 @@ class TasksScreen extends StatelessWidget {
                     top: Radius.circular(20),
                   ),
                 ),
-                child: TasksList(),
+                child: TasksList(tasks),
               ),
             ),
           ],
@@ -79,8 +97,15 @@ class TasksScreen extends StatelessWidget {
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AddTaskScreen(),
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: AddTaskScreen(
+                  callback: (value) {
+                    if (value.isNotEmpty) {
+                      addTask(value);
+                    }
+                  },
+                ),
               ),
             ),
           );

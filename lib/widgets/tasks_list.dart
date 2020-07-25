@@ -5,19 +5,19 @@ import '../models/task.dart';
 import 'task_tile.dart';
 
 class TasksList extends StatefulWidget {
+  final List<Task> tasks;
+
+  const TasksList(this.tasks);
+
   @override
   _TasksListState createState() => _TasksListState();
 }
 
 class _TasksListState extends State<TasksList> {
-  List<Task> tasks = [
-    Task(name: 'Buy  milk'),
-    Task(name: 'Buy  bread'),
-    Task(name: 'Buy  eggs'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    List<Task> tasks = widget.tasks;
+
     return ListView.builder(
       itemCount: tasks.length,
       itemBuilder: (context, index) {
