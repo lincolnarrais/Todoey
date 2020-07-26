@@ -7,15 +7,16 @@ import '../provider/task_data.dart';
 class TasksList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: Provider.of<TaskData>(context).len,
-      itemBuilder: (context, index) {
-        return TaskTile(
-          taskName: Provider.of<TaskData>(context).tasks[index].name,
-          isChecked: Provider.of<TaskData>(context).tasks[index].isDone,
-          toggleCheckboxState: (_) {
-            Provider.of<TaskData>(context, listen: false)
-                .toggleCheckboxState(index);
+    return Consumer<TaskData>(
+      builder: (context, taskData, child) {
+        return ListView.builder(
+          itemCount: taskData.len,
+          itemBuilder: (context, index) {
+            return TaskTile(
+              taskName: taskData.tasks[index].name,
+              isChecked: taskData.tasks[index].isDone,
+              toggleCheckboxState: () => taskData.toggleCheckboxState(index),
+            );
           },
         );
       },
