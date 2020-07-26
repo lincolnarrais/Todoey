@@ -26,15 +26,15 @@ class TasksList extends StatelessWidget {
                         context: context,
                         builder: (_) {
                           return CupertinoAlertDialog(
-                            title: Text('DELETE TASK'),
-                            content: Text('Do you wish to delete this task?'),
+                            title: Text('DELETAR TAREFA'),
+                            content: Text('Deseja deletar a Tarefa?'),
                             actions: <Widget>[
                               FlatButton(
                                 onPressed: () {
                                   // User presses NO
                                   Navigator.pop(context);
                                 },
-                                child: Text('No'),
+                                child: Text('Não'),
                               ),
                               FlatButton(
                                 onPressed: () {
@@ -42,7 +42,7 @@ class TasksList extends StatelessWidget {
                                   taskData.deleteTask(task);
                                   Navigator.pop(context);
                                 },
-                                child: Text('Yes'),
+                                child: Text('Sim'),
                               ),
                             ],
                           );
@@ -52,15 +52,15 @@ class TasksList extends StatelessWidget {
                         context: context,
                         builder: (_) {
                           return AlertDialog(
-                            title: Text('DELETE TASK'),
-                            content: Text('Do you wish to delete this task?'),
+                            title: Text('DELETAR TAREFA'),
+                            content: Text('Deseja deletar a Tarefa?'),
                             actions: <Widget>[
                               FlatButton(
                                 onPressed: () {
                                   // User presses NO
                                   Navigator.pop(context);
                                 },
-                                child: Text('No'),
+                                child: Text('Não'),
                               ),
                               FlatButton(
                                 onPressed: () {
@@ -68,7 +68,7 @@ class TasksList extends StatelessWidget {
                                   taskData.deleteTask(task);
                                   Navigator.pop(context);
                                 },
-                                child: Text('Yes'),
+                                child: Text('Sim'),
                               ),
                             ],
                           );

@@ -16,10 +16,10 @@ class TasksScreen extends StatelessWidget {
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(
-                top: 45,
-                left: 30,
-                right: 30,
-                bottom: 30,
+                top: 25,
+                left: 25,
+                right: 25,
+                bottom: 25,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,13 +42,21 @@ class TasksScreen extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Text(
-                    '${Provider.of<TaskData>(context).taskCount} Tasks',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Consumer<TaskData>(
+                    builder: (context, taskData, child) {
+                      final taskCount = taskData.taskCount;
+                      return Text(
+                        taskCount > 0
+                            ? '$taskCount' +
+                                ' ${taskCount > 1 ? 'Tarefas' : 'Tarefa'}'
+                            : 'Sem Tarefas',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
