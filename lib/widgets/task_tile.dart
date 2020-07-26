@@ -4,11 +4,13 @@ class TaskTile extends StatelessWidget {
   final String taskName;
   final bool isChecked;
   final Function toggleCheckboxState;
+  final Function onLongPress;
 
   TaskTile({
     @required this.taskName,
     @required this.isChecked,
     @required this.toggleCheckboxState,
+    @required this.onLongPress,
   });
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,8 @@ class TaskTile extends StatelessWidget {
         onChanged: (_) => toggleCheckboxState(),
         activeColor: Colors.lightBlueAccent,
       ),
+      onTap: toggleCheckboxState,
+      onLongPress: onLongPress,
     );
   }
 }
