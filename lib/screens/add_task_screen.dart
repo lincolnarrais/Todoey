@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../constants.dart';
+import '../provider/task_data.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  final Function(String) callback;
-
-  const AddTaskScreen({this.callback});
-
   @override
   Widget build(BuildContext context) {
-    String callbackText;
+    String text;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -36,8 +35,8 @@ class AddTaskScreen extends StatelessWidget {
               enabledBorder: kUnderlineInputBorder,
               focusedBorder: kUnderlineInputBorder,
             ),
-            onChanged: (value) {
-              callbackText = value;
+            onChanged: (newText) {
+              text = newText;
             },
           ),
           SizedBox(height: 30),
@@ -46,7 +45,7 @@ class AddTaskScreen extends StatelessWidget {
             child: FlatButton(
               shape: Border.all(color: Colors.lightBlueAccent),
               onPressed: () {
-                callback(callbackText);
+                Provider.of<TaskData>(context, listen: false).addTask(text);
                 Navigator.pop(context);
               },
               color: Colors.lightBlueAccent,
