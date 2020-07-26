@@ -1,3 +1,5 @@
+// TODO implement persistence (JSON?)
+
 import 'package:flutter/foundation.dart';
 
 import '../models/task.dart';
