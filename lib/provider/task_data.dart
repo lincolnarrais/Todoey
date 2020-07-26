@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../models/task.dart';
+
 class TaskData extends ChangeNotifier {
   List<Task> _tasks = [
     Task(name: 'Buy  milk'),
@@ -12,21 +14,12 @@ class TaskData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleCheckboxState(int index) {
-    _tasks[index].toggleIsDone();
+  void toggleCheckboxState(Task task) {
+    task.toggleIsDone();
     notifyListeners();
   }
 
   List<Task> get tasks => [..._tasks];
 
   int get len => _tasks.length;
-}
-
-class Task {
-  String name;
-  bool isDone;
-
-  Task({this.name, this.isDone = false});
-
-  void toggleIsDone() => isDone = !isDone;
 }
