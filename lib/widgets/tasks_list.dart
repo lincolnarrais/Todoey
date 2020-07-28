@@ -16,65 +16,72 @@ class TasksList extends StatelessWidget {
           itemCount: taskData.taskCount,
           itemBuilder: (context, index) {
             final task = taskData.tasks[index];
-            return TaskTile(
-              taskName: task.name,
-              isChecked: task.isDone,
-              toggleCheckboxState: () => taskData.toggleCheckboxState(task),
-              onLongPress: () {
-                Platform.isIOS
-                    ? showCupertinoDialog(
-                        context: context,
-                        builder: (_) {
-                          return CupertinoAlertDialog(
-                            title: Text('DELETAR TAREFA'),
-                            content: Text('Deseja deletar a Tarefa?'),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  // User presses NO
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Não'),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  // User presses YES
-                                  taskData.deleteTask(task);
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Sim'),
-                              ),
-                            ],
+            return Column(
+              children: <Widget>[
+                TaskTile(
+                  taskName: task.name,
+                  isChecked: task.isDone,
+                  toggleCheckboxState: () => taskData.toggleCheckboxState(task),
+                  onLongPress: () {
+                    Platform.isIOS
+                        ? showCupertinoDialog(
+                            context: context,
+                            builder: (_) {
+                              return CupertinoAlertDialog(
+                                title: Text('DELETAR TAREFA'),
+                                content: Text('Deseja deletar a Tarefa?'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      // User presses NO
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Não'),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      // User presses YES
+                                      taskData.deleteTask(task);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Sim'),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
+                        : showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Text('DELETAR TAREFA'),
+                                content: Text('Deseja deletar a Tarefa?'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      // User presses NO
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Não'),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      // User presses YES
+                                      taskData.deleteTask(task);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Sim'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
-                        },
-                      )
-                    : showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: Text('DELETAR TAREFA'),
-                            content: Text('Deseja deletar a Tarefa?'),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  // User presses NO
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Não'),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  // User presses YES
-                                  taskData.deleteTask(task);
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Sim'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-              },
+                  },
+                ),
+                Divider(
+                  color: Colors.grey.shade400,
+                ),
+              ],
             );
           },
         );
