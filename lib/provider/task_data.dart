@@ -1,8 +1,9 @@
-import 'dart:convert' as JSON;
-import 'dart:io';
+import 'dart:convert' show jsonEncode, jsonDecode;
+import 'dart:io' show File;
 
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 
 import '../models/task.dart';
 
@@ -14,12 +15,10 @@ class TaskData extends ChangeNotifier {
       ///TODO: Refatorar este código, extraindo a função anônima dentro de
       ///[then] para um método desta classe.
       _readFile().then((String value) async {
-        final fromJson = await JSON.jsonDecode(value);
-        if (fromJson.isNotEmpty) {
-          for (Map<String, dynamic> map in fromJson) {
-            ///TODO mudar a linha abaixo para [Task.fromJson(map)] e
-            ///verificar se continua funcionando
-            _tasks.add(Task(name: map['name'], isDone: map['isDone']));
+        final json = await jsonDecode(value);
+        if (json.isNotEmpty) {
+          for (Map<String, dynamic> map in json) {
+            _tasks.add(Task.fromJson(map));
           }
         }
       });
@@ -28,10 +27,20 @@ class TaskData extends ChangeNotifier {
     }
   }
 
+  bool get isEmpty {
+    return _tasks.isEmpty;
+  }
+
+  bool get isNotEmpty {
+    return _tasks.isNotEmpty;
+  }
+
   Future<void> addTask(String taskName) async {
-    _tasks.add(Task(name: taskName));
-    await _writeToFile();
-    notifyListeners();
+    if (taskName != null) {
+      _tasks.add(Task(name: taskName));
+      await _writeToFile();
+      notifyListeners();
+    }
   }
 
   Future<void> toggleCheckboxState(Task task) async {
@@ -51,7 +60,7 @@ class TaskData extends ChangeNotifier {
   }
 
   int get taskCount {
-    return _tasks.length;
+    return isNotEmpty ? _tasks.length : 0;
   }
 
   Future<String> get _localPath async {
@@ -67,10 +76,12 @@ class TaskData extends ChangeNotifier {
   Future<String> _readFile() async {
     try {
       final File file = await _localFile;
-      final ret = file.readAsStringSync();
-      notifyListeners();
-      print(ret);
-      return ret;
+      if (await file.exists()) {
+        notifyListeners();
+        return file.readAsStringSync();
+      } else {
+        return '[]';
+      }
     } catch (error) {
       print(error);
       return null;
@@ -81,9 +92,8 @@ class TaskData extends ChangeNotifier {
     try {
       final file = await _localFile;
       final tasks = _tasks.map((Task task) => task.toJson()).toList();
-      print(tasks);
-      await _readFile();
-      return await file.writeAsString(JSON.jsonEncode(tasks));
+      debugPrint('data saved: ${tasks.toString()}', wrapWidth: 80);
+      return await file.writeAsString(jsonEncode(tasks));
     } catch (e) {
       print(e);
       return null;
