@@ -11,6 +11,8 @@ class TaskData extends ChangeNotifier {
 
   TaskData() {
     try {
+      ///TODO: Refatorar este código, extraindo a função anônima dentro de
+      ///[then] para um método desta classe.
       _readFile().then((String value) async {
         final fromJson = await JSON.jsonDecode(value);
         if (fromJson.isNotEmpty) {
