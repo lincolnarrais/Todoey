@@ -1,5 +1,3 @@
-// TODO implement persistence (JSON?)
-
 import 'dart:convert' as JSON;
 import 'dart:io';
 
@@ -9,31 +7,38 @@ import 'package:path_provider/path_provider.dart';
 import '../models/task.dart';
 
 class TaskData extends ChangeNotifier {
-  List<Task> _tasks = [
-    Task(name: 'Comprar leite'),
-    Task(name: 'Comprar pão'),
-    Task(name: 'Comprar ovos'),
-  ];
+  List<Task> _tasks = [];
 
   TaskData() {
-    readFile();
+    try {
+      _readFile().then((String value) async {
+        final fromJson = await JSON.jsonDecode(value);
+        if (fromJson.isNotEmpty) {
+          for (Map<String, dynamic> map in fromJson) {
+            _tasks.add(Task(name: map['name'], isDone: map['isDone']));
+          }
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> addTask(String taskName) async {
     _tasks.add(Task(name: taskName));
-    await writeToFile();
+    await _writeToFile();
     notifyListeners();
   }
 
   Future<void> toggleCheckboxState(Task task) async {
     task.toggleIsDone();
-    await writeToFile();
+    await _writeToFile();
     notifyListeners();
   }
 
   Future<void> deleteTask(Task task) async {
     _tasks.remove(task);
-    await writeToFile();
+    await _writeToFile();
     notifyListeners();
   }
 
@@ -55,18 +60,29 @@ class TaskData extends ChangeNotifier {
     return File('$path/data.json');
   }
 
-  /// THIS NEEDS FIXING
-  Future<void> readFile() async {
-    final file = await _localFile;
-    final tasks = JSON.jsonDecode(await file.readAsString());
-    _tasks = tasks['taskList'];
+  Future<String> _readFile() async {
+    try {
+      final File file = await _localFile;
+      final ret = file.readAsStringSync();
+      notifyListeners();
+      print(ret);
+      return ret;
+    } catch (error) {
+      print(error);
+      return null;
+    }
   }
 
-  Future<void> writeToFile() async {
-    final file = await _localFile;
-    final tasks = _tasks.map((task) {
-      return {'name': task.name, 'isDone': task.isDone};
-    }).toList();
-    await file.writeAsString(JSON.jsonEncode(tasks));
+  Future<File> _writeToFile() async {
+    try {
+      final file = await _localFile;
+      final tasks = _tasks.map((Task task) => task.toJson()).toList();
+      print(tasks);
+      await _readFile();
+      return await file.writeAsString(JSON.jsonEncode(tasks));
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }
