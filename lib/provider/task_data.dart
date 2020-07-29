@@ -27,8 +27,7 @@ class TaskData extends ChangeNotifier {
     return _tasks.isNotEmpty;
   }
 
-  /// Checks if the jsonDecoded Map has ["tasks"] and ["finishedTasks"] keys
-  /// and, if [true], loads the data back to the Task objects.
+  /// Loads the data back to the Task objects.
   /// Supposed to be called right after [_readFile].
   Future<void> _loadData(String value) async {
     final json = await jsonDecode(value);
