@@ -33,11 +33,15 @@ class TaskData extends ChangeNotifier {
   Future<void> _loadData(String value) async {
     final json = await jsonDecode(value);
 
-    for (Map<String, dynamic> map in json) {
-      _tasks.add(Task.fromJson(map));
-      if (map['isDone']) {
-        _finishedCount++;
+    if (json.isNotEmpty) {
+      for (Map<String, dynamic> map in json) {
+        _tasks.add(Task.fromJson(map));
+        if (map['isDone']) {
+          _finishedCount++;
+        }
       }
+    } else {
+      debugPrint('json is Empty');
     }
     debugPrint('data loaded: $json', wrapWidth: 80);
   }
