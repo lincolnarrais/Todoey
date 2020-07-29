@@ -45,10 +45,12 @@ class TasksScreen extends StatelessWidget {
                   Consumer<TaskData>(
                     builder: (context, taskData, child) {
                       final taskCount = taskData.taskCount;
+                      final finishedCount = taskData.finishedCount;
                       return Text(
                         taskCount > 0
                             ? '$taskCount' +
-                                ' ${taskCount > 1 ? 'Tarefas' : 'Tarefa'}'
+                                ' ${taskCount > 1 ? 'Tarefas' : 'Tarefa'}' +
+                                '${finishedCount > 0 ? ', $finishedCount ${finishedCount > 1 ? 'Concluídas' : 'Concluída'}' : ''}'
                             : 'Sem Tarefas',
                         style: TextStyle(
                           color: Colors.white,

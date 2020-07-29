@@ -9,17 +9,11 @@ import '../models/task.dart';
 
 class TaskData extends ChangeNotifier {
   List<Task> _tasks = [];
+  int _finishedCount = 0;
 
   TaskData() {
     try {
-      _readFile().then((String value) async {
-        final json = await jsonDecode(value);
-        if (json.isNotEmpty) {
-          for (Map<String, dynamic> map in json) {
-            _tasks.add(Task.fromJson(map));
-          }
-        }
-      });
+      _readFile().then((value) async => await _loadData(value));
     } catch (e) {
       print(e);
     }
@@ -33,6 +27,21 @@ class TaskData extends ChangeNotifier {
     return _tasks.isNotEmpty;
   }
 
+  /// Checks if the jsonDecoded Map has ["tasks"] and ["finishedTasks"] keys
+  /// and, if [true], loads the data back to the Task objects.
+  /// Supposed to be called right after [_readFile].
+  Future<void> _loadData(String value) async {
+    final json = await jsonDecode(value);
+
+    for (Map<String, dynamic> map in json) {
+      _tasks.add(Task.fromJson(map));
+      if (map['isDone']) {
+        _finishedCount++;
+      }
+    }
+    debugPrint('data loaded: $json', wrapWidth: 80);
+  }
+
   Future<void> addTask(String taskName) async {
     if (taskName != null) {
       _tasks.add(Task(name: taskName));
@@ -41,14 +50,24 @@ class TaskData extends ChangeNotifier {
     }
   }
 
+  /// Toggles a particular Task's [isDone] property, and counts (or stops
+  /// counting) a Task as finished.
   Future<void> toggleCheckboxState(Task task) async {
     task.toggleIsDone();
+    if (task.isDone) {
+      _finishedCount++;
+    } else {
+      _finishedCount--;
+    }
     await _writeToFile();
     notifyListeners();
   }
 
   Future<void> deleteTask(Task task) async {
     _tasks.remove(task);
+    if (task.isDone) {
+      _finishedCount--;
+    }
     await _writeToFile();
     notifyListeners();
   }
@@ -59,6 +78,10 @@ class TaskData extends ChangeNotifier {
 
   int get taskCount {
     return isNotEmpty ? _tasks.length : 0;
+  }
+
+  int get finishedCount {
+    return _finishedCount;
   }
 
   Future<String> get _localPath async {
@@ -90,7 +113,7 @@ class TaskData extends ChangeNotifier {
     try {
       final file = await _localFile;
       final tasks = _tasks.map((Task task) => task.toJson()).toList();
-      debugPrint('data saved: ${tasks.toString()}', wrapWidth: 80);
+      debugPrint('data saved: $tasks', wrapWidth: 80);
       return await file.writeAsString(jsonEncode(tasks));
     } catch (e) {
       print(e);
